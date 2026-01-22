@@ -1,3 +1,26 @@
 spring:
   application:
     name: sns
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/sns?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: 'true'
+        use_sql_comments: 'false'
+        auto_quote_keyword: 'true'
+        show_sql: 'true'
+        default_batch_fetch_size: 10
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+
+
+
+# 토큰의 암호화,복호화에 사용. HS256알고리즘을 사용하기 위해 32글자 이상으로 설정
+jwt:
+  secret: 64461f01e1af406da538b9c48d801ce59142452199ff112fb5404c8e7e98e3ff
