@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>작은SNS - 로그인/회원가입</title>
+	<!-- jQuery( JavaScript 라이브러리 ) -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	
+	<!-- Bootstrap( CSS 프레임워크 ) -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	
+	<!-- Popper.js( Bootstrap의 툴팁과 팝오버 컴포넌트에서 사용됨 ) -->
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  	
+  	<!-- Bootstrap의 Js부분( jQuery와 Popper.js에 의존 ) -->
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  	
+  	<link rel="stylesheet" href="/static/css/style.css">
+  	<script type="text/javascript" src="/static/js/common.js"></script>
+</head>
+<body>
+	<header>
+		<div class="d-flex pt-1 pl-2">
+			<img src="https://cdn.pixabay.com/photo/2021/09/09/04/26/coins-6609452_960_720.jpg" width="50" height="50">
+			<h2 class="text-danger mt-2">작은SNS</h2>
+		</div>
+	</header>
+	<hr>
+	
+	<section class="d-flex justify-content-center">
+		
+		<form id="loginForm" th:action="@{/users/sign-in}" method="post" onsubmit="return loginValidation();">
+			<h2>로그인</h2>
+			<input type="text" id="username" name="username" class="form-control mt-3" placeholder="아이디">
+			<input type="password" id="password" name="password" class="form-control mt-3" placeholder="패스워드">
+			<button id="loginBtn" type="submit" class="btn btn-primary btn-block mt-3">로그인</button>
+		</form>
+		
+		<img src="https://cdn.pixabay.com/photo/2016/11/11/10/41/forex-1816354_960_720.jpg" width="400" height="600">
+		
+		<form id="signUpForm">
+			<h2>회원가입</h2>
+			<input type="text" id="loginIdInput" class="form-control" placeholder="아이디">
+			<button type="button" class="btn btn-info btn-sm" id="isDuplicateBtn">중복확인</button>
+			<small id="errorLoginId" class="text-danger"></small>
+			<div id="duplicateDiv" class="d-none"><small class="text-danger">중복된 ID 입니다.</small></div>
+			<div id="noneDuplicateDiv" class="d-none"><small class="text-success">사용 가능한 ID 입니다.</small></div>
+			
+			<input type="password" id="passwordInput" class="form-control mt-3" placeholder="패스워드">
+			<small id="errorPassword" class="text-danger"></small>
+			<input type="password" id="passwordConfirmInput" class="form-control mt-3" placeholder="패스워드 확인">
+			<small id="errorPasswordConfirm" class="text-danger d-none">비밀번호가 일치하지 않습니다.</small>
+			<input type="text" id="nickNameInput" class="form-control mt-3" placeholder="nickName">
+			<small id="errorNickName" class="text-danger"></small>
+			<input type="text" id="emailInput" class="form-control mt-3" placeholder="이메일">
+			<small id="errorEmail" class="text-danger"></small>
+			
+			<button type="submit" id="signUpBtn" class="btn btn-info btn-block mt-3">회원가입</button>
+		</form>
+	</section>
+	
+	<div th:replace="~{include/footer}"></div>
+	
+	<script type="text/javascript">
+		function loginValidation() {
+			var idForLogin = $("#username").val();
+			var passwordForLogin = $("#password").val();
+			
+			if(idForLogin == null || idForLogin == "") {
+				alert("아이디를 입력해주세요");
+				return false;
+			}
+			
+			if(passwordForLogin == null || passwordForLogin == "") {
+				alert("비밀번호를 입력해주세요");
+				return false;
+			}
+			
+			return true;
+		}
+	
+		$(document).ready(function() {			
+			
+			var isIdCheck = false;
+			var isDuplicateId = true;
+			
+			// <회원가입>
+			$("#signUpForm").on("submit", function(e) {
+				
+				e.preventDefault();
+				
+				var loginId = $("#loginIdInput").val();
+				var password = $("#passwordInput").val();
+				var passwordConfirm = $("#passwordConfirmInput").val();
+				var nickName = $("#nickNameInput").val().trim();
+				var email = $("#emailInput").val().trim();
+				
+				if(loginId == null || loginId == "") {
+					alert("아이디를 입력하세요");
+					return ;
+				}
+				
+				if(password == null || password == "") {
+					alert("비밀번호를 입력하세요");
+					return ;
+				}
+				
+				if(password != passwordConfirm) {
+					$("#errorPasswordConfirm").removeClass("d-none");
+					return ;
+				}
+				
+				if(nickName == null || nickName == "") {
+					alert("nickName을 입력하세요");
+					return ;
+				}
+				
+				if(email == null || email == "") {
+					alert("이메일을 입력하세요");
+					return ;
+				}
+				
+				// 중복체크 했는지?
+				if(isIdCheck == false) {
+					alert("중복체크를 진행하세요");
+					return ;
+				}
+						
+				// 중복이 되었는지 안되었는지?
+				if(isDuplicate == true) {
+					alert("아이디가 중복되었습니다.");
+					return ;
+				}
+				
+				var params = { "loginId":loginId, "password":password
+						, "nickName":nickName, "email":email }
+				
+				$.ajax({
+					type:"post",
+					url:"/users",
+					data:JSON.stringify(params),
+					contentType: 'application/json;charset=utf-8',
+					success:function(response) {
+						if(response.status == "success") {
+							alert("회원가입 성공");
+							location.href="/sign-view";
+						} else {
+							if (response.message == "failValidation") {
+								
+								let validationMessage = response.data;
+								
+								for (let key in validationMessage) {
+									if (key == "loginId") {
+										$("#errorLoginId").text(validationMessage[key]);
+									} else if (key == "password") {
+										$("#errorPassword").text(validationMessage[key]);										
+									} else if (key == "nickName") {										
+										$("#errorNickName").text(validationMessage[key]);
+									} else if (key == "email") {
+										$("#errorEmail").text(validationMessage[key]);
+									}
+								}
+								
+							} else {
+								alert(response.message);
+							}
+							
+						}
+					}, 
+					error:function(xhr) {
+						let response = xhr.responseJSON;
+						console.log(response);
+						
+						if (response.code == "InvalidFormat") {
+							alert(response.message);
+						} else {
+							let userGuide = errorMessage(response.code);
+							alert("회원 가입 실패 \n" + userGuide);							
+						}
+			
+					}
+					
+					
+				});
+			});
+			// </회원가입>
+			
+			// <중복확인> 
+			$("#isDuplicateBtn").on("click", function() {
+			
+				var loginId = $("#loginIdInput").val();
+				
+				if(loginId == null || loginId == "") {
+					alert("아이디를 입력하세요");
+					return ;
+				}
+				
+				$.ajax({
+					type:"get",
+					url:"/users/" + loginId,
+				
+					success:function(response) {
+						isIdCheck = true;
+						
+						if(response.data.is_duplicate) {
+							isDuplicate = true;
+							$("#duplicateDiv").removeClass("d-none");
+							$("#noneDuplicateDiv").addClass("d-none");
+						} else {
+							isDuplicate = false;
+							$("#duplicateDiv").addClass("d-none");
+							$("#noneDuplicateDiv").removeClass("d-none");
+						}
+					},
+					error:function(xhr) {
+						let response = xhr.responseJSON;
+						console.log(response);
+						
+						let userGuide = errorMessage(response.code);
+						alert("중복확인 실패 \n" + userGuide);
+					}		
+				});
+			})
+			// </중복확인>
+		});
+	
+	</script>
+</body>
+</html>

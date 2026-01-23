@@ -1,4 +1,4 @@
-package com.example.sns.user;
+package com.example.sns.admin;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
