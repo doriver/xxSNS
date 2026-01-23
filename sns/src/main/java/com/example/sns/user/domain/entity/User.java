@@ -1,11 +1,16 @@
 package com.example.sns.user.domain.entity;
 
+
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -16,20 +21,48 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    private String nickname; // 필수값, username역할도 함
+    @NotBlank
+    private String username;
+
+    @NotBlank
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @NotNull
     private Role role;
 
-    @NotNull
-    private String password;
+    @Email
+    private String email;
+
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+            insertable = false, updatable = false // DB가 직접 입력하므로 ,JPA는 신경 끄라는 의미
+    )
+    private LocalDateTime updatedAt;
+
+    @NotBlank
+    private String nickname;
+
+    private String profileImage;
+
+    private String location;
 
     @Builder
-    public User(String nickname, String password, Role role) {
-        this.nickname = nickname;
+    public User(String username, String password, Role role, String email, String nickname) {
+        this.username = username;
         this.password = password;
         this.role = role;
+        this.email = email;
+        this.nickname = nickname;
+    }
+
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+    public void updateLocation(String location) {
+        this.location = location;
     }
 }
