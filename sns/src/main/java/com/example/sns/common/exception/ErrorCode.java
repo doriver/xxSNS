@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     // 유저
     NEED_TO_LOGIN(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.")
+    , DONT_FIND_USER(HttpStatus.BAD_REQUEST, "해당 사용자를 찾을수 없습니다.")
     , DONT_HAVE_AUTHORITY(HttpStatus.BAD_REQUEST, "해당 서비스를 이용할 권한이 없습니다.")
 
     ;

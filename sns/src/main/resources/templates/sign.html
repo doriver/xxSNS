@@ -176,8 +176,8 @@
 						let response = xhr.responseJSON;
 						console.log(response);
 						
-						let userGuide = errorMessage(response.code);
-						alert("중복확인 실패 \n" + userGuide);
+						let errorMessage = response.errorMessage;
+						alert("중복확인 실패 \n" + errorMessage);
 					}		
 				});
 			})

@@ -511,17 +511,12 @@
 					url:"/users/location",
 					data:{"location":userLocation},
 					success:function(response) {
-						if(response.status == "success") {
-							alert("위치설정 성공");
-							location.reload();
-						} else {
-							alert(response.message);
-						}
+						alert("위치설정 성공");
+						location.reload();
 					},
 					error:function(xhr) {
 						let response = xhr.responseJSON;
-						console.log(response);
-						alert("위치설정 실패 \n" + response.message);
+						alert("위치설정 실패 \n" + response.errorMessage);
 					}
 				});
 			});

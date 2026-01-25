@@ -1,9 +1,11 @@
 package com.example.sns.user.presentation;
 
 import com.example.sns.common.ApiResponse;
+import com.example.sns.common.argumentResolver.UserInfo;
 import com.example.sns.common.exception.Expected4xxException;
 import com.example.sns.common.exception.Expected5xxException;
 import com.example.sns.config.security.jwt.JwtToken;
+import com.example.sns.user.application.UserService;
 import com.example.sns.user.application.UserSignService;
 
 import com.example.sns.user.presentation.dto.UserSignInDTO;
@@ -28,6 +30,7 @@ import java.util.Map;
 public class UserController {
 	
 	private final UserSignService userSignService;
+	private final UserService userService;
 
 	// 로그인
 	@PostMapping("/users/sign-in")
@@ -44,21 +47,17 @@ public class UserController {
 
 		response.addCookie(accessCookie);
         
-		return "redirect:/invest-view";
+		return "redirect:/post-view";
 	}
 
-	// 아이디 중복확인 기능 - 입력받은id를 db에서 조회(select where)
+	// 아이디 중복확인 기능
 	@GetMapping("/users/{loginId}")
 	@ResponseBody
 	public ApiResponse<Map<String, Boolean>> isDuplicateId (@PathVariable("loginId") String loginId) {
 
 		Map<String, Boolean> result = new HashMap<>();
-
-		if(userBO.isDuplicateId(loginId)) {
-			result.put("is_duplicate", true);
-		} else {
-			result.put("is_duplicate", false);
-		}
+		result.put("is_duplicate"
+				, userService.isDuplicateId(loginId));
 
 		return ApiResponse.success(result);
 	}
@@ -89,33 +88,8 @@ public class UserController {
 			@RequestParam("location") String location
 			, UserInfo userInfo) {
 
-		int count = userBO.editLocation(userInfo.getUserId(), location);
-
-		if (count == 1) {
-			return ApiResponse.success();
-		} else {
-			return ApiResponse.fail("위치 설정 실패");
-		}
-
-	}
-
-
-	// 사용자의 프로필 설정 기능
-	@PatchMapping("/users/profile")
-	@ResponseBody
-	public ApiResponse<?> userProfile(
-			@RequestParam("profileStatusMessage") String profileStatusMessage
-			, @RequestParam(value = "file", required = false) MultipartFile file
-			, UserInfo userInfo) {
-
-		int count = userBO.editProfile(userInfo.getUserId(), file, profileStatusMessage);
-
-		if (count == 1) {
-			return ApiResponse.success();
-		} else {
-			return ApiResponse.fail("프로필 설정 실패");
-		}
-
+		userService.editLocation(userInfo.getUserId(), location);
+		return ApiResponse.success();
 	}
 	
 }
