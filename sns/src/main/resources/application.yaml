@@ -6,6 +6,10 @@ spring:
     url: jdbc:mysql://localhost:3306/sns?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password: root
+  data:
+    redis:
+      host: localhost # host.docker.internal
+      port: 6379
   jpa:
     hibernate:
       ddl-auto: update

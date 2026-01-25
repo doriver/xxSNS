@@ -25,9 +25,17 @@ public class UserService {
 
     @Transactional
     public void editLocation(Long userId, String location) {
+        User user = this.userInformation(userId);
+        user.updateLocation(location);
+    }
+
+    public String getProfileImage(Long userId) {
+        return userRepository.findProfileImageById(userId);
+    }
+
+    public User userInformation(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new Expected4xxException(ErrorCode.DONT_FIND_USER));
-
-        user.updateLocation(location);
+        return user;
     }
 }

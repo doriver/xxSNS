@@ -1,0 +1,43 @@
+@charset "UTF-8";
+
+
+.image-upload-icon {
+	font-size:20px;
+	color:black;
+}
+.post-timeline-box {
+	width:600px;
+}
+
+.profile-box {
+	width:220px;
+}
+
+.location-setting {
+	width:300px;
+}
+
+.status-message-box {
+	height:80px;
+}
+body {
+	min-width:900px;
+}
+header {
+	height:60px;
+	padding-top: 8px;
+}
+
+.nav-item > .nav-link {font-size:18px; color:white; background-color:#cc0000;}
+
+footer {
+	height:50px;
+}
+.user {
+	font-size:20px;
+}
+
+.filter-text {
+	font-size:20px;
+	font-weight: bold;
+}
