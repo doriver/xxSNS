@@ -1,11 +1,16 @@
 package com.example.sns.user.presentation;
 
+import com.example.sns.common.ApiResponse;
+import com.example.sns.common.exception.Expected4xxException;
+import com.example.sns.common.exception.Expected5xxException;
 import com.example.sns.config.security.jwt.JwtToken;
 import com.example.sns.user.application.UserSignService;
 
 import com.example.sns.user.presentation.dto.UserSignInDTO;
+import com.example.sns.user.presentation.dto.UserSignUpDTO;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -26,9 +31,9 @@ public class UserController {
 
 	// 로그인
 	@PostMapping("/users/sign-in")
-    public String signIn(@RequestBody UserSignInDTO userSignInDTO, HttpServletResponse response) {
+    public String signIn(@Valid @RequestBody UserSignInDTO userSignInDTO, HttpServletResponse response) {
 
-		JwtToken jwtToken = userSignService.authenticateUser(userSignInDTO.getNickname(), userSignInDTO.getPassword());
+		JwtToken jwtToken = userSignService.authenticateUser(userSignInDTO.getUsername(), userSignInDTO.getPassword());
 		log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
 
 		// ACCESS TOKEN 쿠키로 발급
@@ -44,8 +49,8 @@ public class UserController {
 
 	// 아이디 중복확인 기능 - 입력받은id를 db에서 조회(select where)
 	@GetMapping("/users/{loginId}")
-	public ApiResponse<Map<String, Boolean>> isDuplicateId (
-			@PathVariable("loginId") String loginId) {
+	@ResponseBody
+	public ApiResponse<Map<String, Boolean>> isDuplicateId (@PathVariable("loginId") String loginId) {
 
 		Map<String, Boolean> result = new HashMap<>();
 
@@ -61,28 +66,25 @@ public class UserController {
 
 	// 회원가입 기능 - 입력받은 정보들을 db에 저장(insert)
 	@PostMapping("/users")
-	public ApiResponse<?> signUp( @Validated @RequestBody UserSaveForm form
-			, BindingResult bindingResult ) {
+	@ResponseBody
+	public ApiResponse<?> signUp(@Valid @RequestBody UserSignUpDTO userSignUpDTO) {
 
-		if (bindingResult.hasErrors()) {
-			Map<String, String> validationMessage
-					= cmnValidation.getValidationMessage(bindingResult);
+		Map<String,Object> result = userSignService.registerUser(userSignUpDTO);
 
-			return ApiResponse.fail("failValidation", validationMessage);
+		if (result.get("failMessage") != null) {
+			throw new Expected4xxException(
+					(String)(result.get("failMessage")));
 		}
 
-		int count = userBO.signUp(form.getLoginId(), form.getPassword(), form.getNickName(), form.getEmail());
-
-		if (count == 1) {
-			return ApiResponse.success();
-		} else { // 암호화 실패경우
-			return ApiResponse.fail("비밀번호 암호화 실패");
+		if (result.get("successValue") == null) {
+			throw new Expected5xxException("회원가입에 실패했습니다.");
 		}
-
+		return ApiResponse.success(result.get("successValue"));
 	}
 
 	// 사용자의 위치설정 기능
 	@PatchMapping("/users/location")
+	@ResponseBody
 	public ApiResponse<?> userLocation(
 			@RequestParam("location") String location
 			, UserInfo userInfo) {
@@ -100,6 +102,7 @@ public class UserController {
 
 	// 사용자의 프로필 설정 기능
 	@PatchMapping("/users/profile")
+	@ResponseBody
 	public ApiResponse<?> userProfile(
 			@RequestParam("profileStatusMessage") String profileStatusMessage
 			, @RequestParam(value = "file", required = false) MultipartFile file

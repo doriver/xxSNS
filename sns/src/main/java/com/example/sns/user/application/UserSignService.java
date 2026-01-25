@@ -6,12 +6,17 @@ import com.example.sns.config.security.jwt.JwtTokenProvider;
 import com.example.sns.user.domain.entity.Role;
 import com.example.sns.user.domain.entity.User;
 import com.example.sns.user.domain.repository.UserRepository;
+import com.example.sns.user.presentation.dto.UserSignUpDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,20 +27,34 @@ public class UserSignService {
     private final JwtTokenProvider jwtTokenProvider;
 
     /*
-        회원가입
+            회원가입
+        성공시, 저장된 userId값
+        실패시, 실패메시지
     */
-    public void registerUser(String nickname, String password, Role role) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encryptPassword = passwordEncoder.encode(password);
+    public Map<String,Object> registerUser(UserSignUpDTO userSignUpDTO) {
+        Map<String,Object> result = new HashMap<>();
+        Optional<User> optionalUser = userRepository.findByUsername(userSignUpDTO.getUsername());
 
-        if(encryptPassword.equals("")) {
-            throw new RuntimeException("비밀번호 암호화 실패");
+        if (optionalUser.isPresent()) {
+            result.put("failMessage", "이미 존재하는 닉네임 입니다");
+            return result;
+        }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encryptPassword = passwordEncoder.encode(userSignUpDTO.getPassword());
+
+        if(encryptPassword.isEmpty()) {
+            result.put("failMessage", "비밀번호 암호화 실패");
+            return result;
         }
         User user = User.builder()
-                .nickname(nickname).password(encryptPassword).role(role)
+                .username(userSignUpDTO.getUsername()).password(encryptPassword)
+                .role(userSignUpDTO.getRole()).email(userSignUpDTO.getEmail())
                 .build();
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        result.put("successValue", savedUser.getId());
+        return result;
     }
 
     // 로그인

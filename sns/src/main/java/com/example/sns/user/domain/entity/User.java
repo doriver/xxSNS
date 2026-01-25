@@ -43,20 +43,16 @@ public class User {
     )
     private LocalDateTime updatedAt;
 
-    @NotBlank
-    private String nickname;
-
     private String profileImage;
 
     private String location;
 
     @Builder
-    public User(String username, String password, Role role, String email, String nickname) {
+    public User(String username, String password, Role role, String email) {
         this.username = username;
         this.password = password;
         this.role = role;
         this.email = email;
-        this.nickname = nickname;
     }
 
     public void updateProfileImage(String profileImage) {
