@@ -50,8 +50,6 @@
 			<small id="errorPassword" class="text-danger"></small>
 			<input type="password" id="passwordConfirmInput" class="form-control mt-3" placeholder="패스워드 확인">
 			<small id="errorPasswordConfirm" class="text-danger d-none">비밀번호가 일치하지 않습니다.</small>
-			<input type="text" id="nickNameInput" class="form-control mt-3" placeholder="nickName">
-			<small id="errorNickName" class="text-danger"></small>
 			<input type="text" id="emailInput" class="form-control mt-3" placeholder="이메일">
 			<small id="errorEmail" class="text-danger"></small>
 			
@@ -92,7 +90,6 @@
 				var loginId = $("#loginIdInput").val();
 				var password = $("#passwordInput").val();
 				var passwordConfirm = $("#passwordConfirmInput").val();
-				var nickName = $("#nickNameInput").val().trim();
 				var email = $("#emailInput").val().trim();
 				
 				if(loginId == null || loginId == "") {
@@ -107,11 +104,6 @@
 				
 				if(password != passwordConfirm) {
 					$("#errorPasswordConfirm").removeClass("d-none");
-					return ;
-				}
-				
-				if(nickName == null || nickName == "") {
-					alert("nickName을 입력하세요");
 					return ;
 				}
 				
@@ -132,8 +124,7 @@
 					return ;
 				}
 				
-				var params = { "loginId":loginId, "password":password
-						, "nickName":nickName, "email":email }
+				var params = { "loginId":loginId, "password":password, "email":email }
 				
 				$.ajax({
 					type:"post",
@@ -141,46 +132,15 @@
 					data:JSON.stringify(params),
 					contentType: 'application/json;charset=utf-8',
 					success:function(response) {
-						if(response.status == "success") {
-							alert("회원가입 성공");
-							location.href="/sign-view";
-						} else {
-							if (response.message == "failValidation") {
-								
-								let validationMessage = response.data;
-								
-								for (let key in validationMessage) {
-									if (key == "loginId") {
-										$("#errorLoginId").text(validationMessage[key]);
-									} else if (key == "password") {
-										$("#errorPassword").text(validationMessage[key]);										
-									} else if (key == "nickName") {										
-										$("#errorNickName").text(validationMessage[key]);
-									} else if (key == "email") {
-										$("#errorEmail").text(validationMessage[key]);
-									}
-								}
-								
-							} else {
-								alert(response.message);
-							}
-							
-						}
+						alert("회원가입 성공");
+						location.href="/sign-view";
 					}, 
 					error:function(xhr) {
 						let response = xhr.responseJSON;
 						console.log(response);
-						
-						if (response.code == "InvalidFormat") {
-							alert(response.message);
-						} else {
-							let userGuide = errorMessage(response.code);
-							alert("회원 가입 실패 \n" + userGuide);							
-						}
-			
+
+						alert(response.errorMessage);
 					}
-					
-					
 				});
 			});
 			// </회원가입>

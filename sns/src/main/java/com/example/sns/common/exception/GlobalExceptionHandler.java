@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(HttpStatus.BAD_REQUEST, builder.toString()));
+                .body(ApiResponse.error(HttpStatus.UNPROCESSABLE_CONTENT, builder.toString()));
     }
 
     @ExceptionHandler(Expected5xxException.class)
