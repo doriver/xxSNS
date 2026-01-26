@@ -1,5 +1,6 @@
 <!DOCTYPE html> 
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <title>타임라인</title>
@@ -47,25 +48,25 @@
 						<div>
 							<img th:if="${postWithOthers.writerProfileImage != null}" th:src="${postWithOthers.writerProfileImage }" width="30" height="30">
 							<img th:if="${postWithOthers.writerProfileImage == null}" src="https://mblogthumb-phinf.pstatic.net/20150203_225/hkjwow_1422965971196EfkMV_JPEG/%C4%AB%C5%E5%C7%C1%BB%E7_31.jpg?type=w210" width="30">	
-							<a th:href="@{/individual-home-view(userId=${postWithOthers.investPost.userId})}" class="font-weight-bold text-dark">
-								<span th:text="${postWithOthers.investPost.userNickName}"></span>
+							<a th:href="@{/individual-home-view(userId=${postWithOthers.post.userId})}" class="font-weight-bold text-dark">
+								<span th:text="${postWithOthers.post.username}"></span>
 							</a>
 						</div>
 						
 						<!-- 좋아요 -->
 						<div>
-							<a href="#" class="likeBtn" th:data-post-id="${postWithOthers.investPost.id }">
-								<i th:if="${postWithOthers.like}" class="bi bi-heart-fill heart-icon text-danger" data-status="like" th:id="'heartIcon-' + ${postWithOthers.investPost.id}"></i>
-								<i th:if="${!postWithOthers.like}" class="bi bi-heart heart-icon text-dark" th:id="'heartIcon-' + ${postWithOthers.investPost.id}"></i>
+							<a href="#" class="likeBtn" th:data-post-id="${postWithOthers.post.id }">
+								<i th:if="${postWithOthers.like}" class="bi bi-heart-fill heart-icon text-danger" data-status="like" th:id="'heartIcon-' + ${postWithOthers.post.id}"></i>
+								<i th:if="${!postWithOthers.like}" class="bi bi-heart heart-icon text-dark" th:id="'heartIcon-' + ${postWithOthers.post.id}"></i>
 							</a>
 							<span class="middle-size ml-1"> 
-								좋아요 <span th:id="'likeCount-' + ${postWithOthers.investPost.id }" >[[${postWithOthers.likeCount}]]</span>개 
+								좋아요 <span th:id="'likeCount-' + ${postWithOthers.post.id }" >[[${postWithOthers.likeCount}]]</span>개 
 							</span>
 						</div>
 						
 						<!-- 글 의 userId 와 세션의 userId 가 일치하면 더보기 버튼 노출 -->
-						<div th:if="${postWithOthers.investPost.userId == session.userId}" class="more-icon" >
-							<a href="#" class="text-dark moreBtn" data-toggle="modal" data-target="#postEditModal" th:data-post-id="${postWithOthers.investPost.id }"> 
+						<div th:if="${postWithOthers.post.userId == session.userId}" class="more-icon" >
+							<a href="#" class="text-dark moreBtn" data-toggle="modal" data-target="#postEditModal" th:data-post-id="${postWithOthers.post.id }"> 
 								<i class="bi bi-three-dots-vertical"></i> 
 							</a>
 						</div>
@@ -79,10 +80,10 @@
 					<!-- 내용 -->
 					<div class="middle-size m-2 d-flex justify-content-between">
 						<div>
-							[[${postWithOthers.investPost.content}]]
+							[[${postWithOthers.post.content}]]
 						</div>
 						<div>
-							<img th:src="${postWithOthers.investPost.imagePath }" width="285">
+							<img th:src="${postWithOthers.post.imagePath }" width="285">
 						</div>
 					</div>
 					
@@ -96,14 +97,14 @@
 						<!--  댓글현황  -->
 						<div class="middle-size m-2">
 							<div th:each="comment : ${postWithOthers.commentList}" class="mt-1">
-								<b>[[${comment.userNickName}]]</b> [[${comment.content}]]
+								<b>[[${comment.username}]]</b> [[${comment.content}]]
 							</div>
 						</div>
 						
 						<!-- 댓글 입력 -->
 						<div class="d-flex mt-2 border-top">
-							<input type="text" class="form-control border-0 " th:id="'commentInput-' + ${postWithOthers.investPost.id }">
-							<button class="btn btn-info ml-2 commentBtn" th:data-post-id="${postWithOthers.investPost.id }">게시</button>
+							<input type="text" class="form-control border-0 " th:id="'commentInput-' + ${postWithOthers.post.id }">
+							<button class="btn btn-info ml-2 commentBtn" th:data-post-id="${postWithOthers.post.id }">게시</button>
 						</div>
 						
 					</div>
@@ -310,8 +311,6 @@
 					}
 				})
 			});
-
-
 		});
 	</script>
 </body>

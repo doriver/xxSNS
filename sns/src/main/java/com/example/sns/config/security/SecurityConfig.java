@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/sign-out")
                         .deleteCookies("Authorization")
-                        .logoutSuccessUrl("/view/sign/in")
+                        .logoutSuccessUrl("/sign-view")
                 )
         ;
 
