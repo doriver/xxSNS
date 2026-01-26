@@ -247,7 +247,7 @@
 				
 				$.ajax({
 					type:"get",
-					url:"/likes/invest/" + postId,
+					url:"/likes/" + postId,
 
 					success:function(response) {
 						if(response.data.like) { // 좋아요
@@ -269,7 +269,7 @@
 					error:function(xhr) {
 						let response = xhr.responseJSON;
 						console.log(response);
-						alert("좋아요 실패 \n" + response.message);
+						alert("좋아요 실패 \n" + response.errorMessage);
 					}
 				});
 				
