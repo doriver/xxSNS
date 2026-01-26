@@ -20,10 +20,10 @@
 	<header class="d-flex">
 		<div class="col-4 d-flex">
 			<img src="https://cdn.pixabay.com/photo/2021/09/09/04/26/coins-6609452_960_720.jpg" width="50" height="50">
-			<h2 class="text-danger pt-2">투자SNS</h2>
+			<h2 class="text-danger pt-2">작은SNS</h2>
 		</div>
 		<div class="col-4 d-flex justify-content-center">
-			<h2 class="pt-3 text-danger">투자게시판</h2>
+			<h2 class="pt-3 text-danger">타임라인</h2>
 		</div>
 		<div th:replace="~{include/userSector}"></div>
 	</header>
@@ -34,41 +34,6 @@
 
 	<section class="d-flex">
 		<div class="col-2">
-			<h5>게시글 필터링 기능</h5>
-			<form method="get" action="/invest-view-filtered">
-				<select name="investStyleForFiltering">
-	          			<option value="">투자스타일</option>
-	          			<option>단타x</option>
-	          			<option>단타</option>
-	      		</select>
-	      		<br>
-	     
-				<select name="stockItemNameForFiltering">
-	          			<option value="">관심종목</option>
-	          			<option>카카오게임즈</option>
-	          			<option>펄어비스</option>
-	          			<option>셀트리온</option>
-	      		</select>
-	      		<br>
-	      	
-				<select name="investmentOpinionForFiltering">
-	          			<option value="">투자의견</option>
-	          			<option>buy</option>
-	          			<option>hold</option>
-	          			<option>sell</option>
-	      		</select>
-	      		<br>
-	      	
-				<select name="investmentProcessForFiltering">
-	          			<option value="">투자과정</option>
-	          			<option>분석,공부</option>
-	          			<option>매수</option>
-	          			<option>매도</option>
-	          			<option>영감</option>
-	      		</select>
-	      
-	      		<button type="submit" id="filteringBtn" class="btn">필터링</button>
-			</form>
 			
 		</div>
 		
@@ -108,10 +73,7 @@
 					<!-- /글 시작부분 -->
 					
 					<div class="d-flex justify-content-around border-bottom p-1">
-						<div class="font-weight-bold">[[${postWithOthers.investPost.investStyle}]]</div>
-						<div class="font-weight-bold">[[${postWithOthers.investPost.stockItemName}]]</div>
-						<div class="font-weight-bold">[[${postWithOthers.investPost.investmentOpinion}]]</div>
-						<div class="font-weight-bold">[[${postWithOthers.investPost.investmentProcess}]]</div>
+
 					</div>
 					
 					<!-- 내용 -->
@@ -165,32 +127,9 @@
 	      <div class="modal-body text-center">
 	        <!--  게시글 작성  -->
 			<div>
-				<h3>투자게시글 작성</h3>
+				<h3>게시글 작성</h3>
 				<div class="d-flex">
-					<select id="investStyle">
-            			<option>투자스타일</option>
-            			<option>단타x</option>
-            			<option>단타</option>
-        			</select>
-					<select id="stockItemName">
-            			<option>관심종목</option>
-            			<option>카카오게임즈</option>
-            			<option>펄어비스</option>
-            			<option>셀트리온</option>
-        			</select>
-					<select id="investmentOpinion">
-            			<option>투자의견</option>
-            			<option>buy</option>
-            			<option>hold</option>
-            			<option>sell</option>
-        			</select>
-					<select id="investmentProcess">
-            			<option>투자과정</option>
-            			<option>분석,공부</option>
-            			<option>매수</option>
-            			<option>매도</option>
-            			<option>영감</option>
-        			</select>
+
 				</div>
 			
 				<div class="border rounded mt-1">
@@ -230,46 +169,13 @@
 
 	        // <글쓰기 버튼 눌렀을때>
 			$("#writeBtn").on("click", function() {
-		    	var investStyle;
-		    	var stockItemName;
-		    	var investmentOpinion;
-		    	var investmentProcess;
-		    	
-		        $("#investStyle").on("change", function() {
-		        	investStyle = $("#investStyle option:selected").val();
-		        });
-		        $("#stockItemName").on("change", function() {
-		        	stockItemName = $("#stockItemName option:selected").val();
-		        });
-		        $("#investmentOpinion").on("change", function() {
-		        	investmentOpinion = $("#investmentOpinion option:selected").val();
-		        });
-		        $("#investmentProcess").on("change", function() {
-		        	investmentProcess = $("#investmentProcess option:selected").val();
-		        });
-				
+
 				$("#uploadBtn").on("click", function() {
 					let content = $("#contentInput").val().trim();
 						
 					if(content == null || content == "") {
 						alert("내용을 입력하세요");
 						return ;
-					}
-					if (investStyle == null || investStyle =="") {
-						alert("투자스타일을 선택하세요");
-						return ;						
-					}
-					if (stockItemName == null || stockItemName == "") {
-						alert("관심종목을 선택하세요");
-						return ;						
-					}
-					if (investmentOpinion == null || investmentOpinion == "") {
-						alert("투자의견을 선택하세요");
-						return ;					
-					}
-					if (investmentProcess == null || investmentProcess == "") {
-						alert("투자과정을 선택하세요");
-						return ;						
 					}
 				
 					var formData = new FormData();
@@ -280,43 +186,21 @@
 					if (content != null) {
 						formData.append("content", content);
 					}
-					if (investStyle != null) {
-						formData.append("investStyle", investStyle);						
-					}
-					if (stockItemName != null) {
-						formData.append("stockItemName", stockItemName);						
-					}
-					if (investmentOpinion != null) {
-						formData.append("investmentOpinion", investmentOpinion);						
-					}
-					if (investmentProcess != null) {
-						formData.append("investmentProcess", investmentProcess);						
-					}
 					
 					$.ajax({
 						enctype: 'multipart/form-data', // 필수
 						type:"POST",
-						url:"/invest-posts",
+						url:"/posts",
 						processData: false, // 필수 
 			        	contentType: false, // 필수 
 						data:formData,
 						success:function(response) {
-							if(response.status == "success") {
-								alert("글쓰기 성공");
-								location.reload();
-							} else {
-								if (response.message == "failValidation") {
-									let validationMessage = response.data;
-									alert(JSON.stringify(validationMessage));
-								} else {									
-									alert(response.message);
-								}
-							}
-							
+							alert("글쓰기 성공");
+							location.reload();
 						}, error:function(xhr) {
 							let response = xhr.responseJSON;
 							console.log(response);
-							alert("게시글 작성 실패 \n" + response.message);
+							alert("게시글 작성 실패 \n" + response.errorMessage);
 						}
 					});
 					

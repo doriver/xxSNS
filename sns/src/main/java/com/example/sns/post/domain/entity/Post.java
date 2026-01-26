@@ -29,6 +29,9 @@ public class Post {
     private Long userId;
 
     @NotBlank
+    private String username;
+
+    @NotBlank
     @Column(columnDefinition = "TEXT")
     private String content;
 
@@ -44,8 +47,9 @@ public class Post {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Post(Long userId, String content, String imagePath) {
+    public Post(Long userId, String username, String content, String imagePath) {
         this.userId = userId;
+        this.username = username;
         this.content = content;
         this.imagePath = imagePath;
     }
