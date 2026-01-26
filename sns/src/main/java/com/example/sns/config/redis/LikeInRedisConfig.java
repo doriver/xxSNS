@@ -1,4 +1,4 @@
-package com.example.sns.config;
+package com.example.sns.config.redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,9 +8,11 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
+/*
+    좋아요 기능 처리
+ */
 @Configuration
-public class RedisConfig {
+public class LikeInRedisConfig {
     @Value("${spring.data.redis.host}")
     private String host;
 

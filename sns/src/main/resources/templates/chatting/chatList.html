@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- jQuery( JavaScript 라이브러리 ) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- Sweet Alert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.20/bulma.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <title>단톡방 목록</title>
+    <link href="/css/chatting/chatList.css" rel="stylesheet">
+    <script src="/js/chatting/chatList.js"></script>
+  </head>
+
+  <body>
+    <div style="height: 50px;">
+      <input type="hidden" class="userId" th:value="${userId}">
+      <button onclick="as()">sse close</button>
+      <button onclick="ab()">sse info</button>
+    </div>
+    <div th:replace="~{fragment/header}"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-4">
+          <h4>멘토 단톡방 목록</h4>
+        </div>
+        <div class="col-4">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="채팅방 검색">
+            <div class="input-group-append">
+              <span class="input-group-text bg-transparent text-primary" style="cursor: pointer;" onclick="document.forms[0].submit()">
+                <i class="fa fa-search"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div sec:authorize="hasAuthority('MENTOR')">
+            <button type="button" class="btn btn-success"
+              onclick="createRoom()">단톡방 생성하기</button>
+          </div>
+        </div>
+      </div>
+      <div style="height: 50px;"></div>
+      <div id="chatRoomListBox">
+        <div class="row rowDiv" style="min-width: 1110px; margin-bottom: 15px;"
+          th:each="cardRow : ${#numbers.sequence(0, chatRoomList.size() - 1, 4)}">
+            <div class="col-3 roomUI" 
+              th:classappend="'room-' + ${chatRoom.id}"
+              th:each="chatRoom : ${chatRoomList.subList(cardRow, cardRow + 4 > chatRoomList.size() ? chatRoomList.size() : cardRow + 4)}">
+                <div class="card mb-2">
+                    <div class="row">
+                        <div class="col-4">
+                            <img src="/img/chatting/undraw_profile.svg" style="width: 50px; height: 50px;">
+                        </div>
+                        <div class="col-8">
+                            <p>[[${chatRoom.mentor}]]</p>
+                        </div>
+                    </div>
+                    <h4>[[${chatRoom.roomName}]]</h4>
+                    <div>생성된 시간 : [[${chatRoom.createdAt}]]</div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>인원 : 
+                            <span th:class="'roomUserCount-' + ${chatRoom.id}"
+                                >[[${chatRoom.userCount}]]</span>/<span>[[${chatRoom.userLimit}]] </span>
+                        </div>
+                        
+                        <form sec:authorize="isAuthenticated()"
+                            th:action="@{/chatting/participants/rooms/{roomId}(roomId=${chatRoom.id})}"
+                            method="post">
+                            <button type="submit"> 단톡 참석 </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

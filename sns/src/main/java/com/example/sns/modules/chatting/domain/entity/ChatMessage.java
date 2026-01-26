@@ -1,0 +1,44 @@
+package com.example.sns.modules.chatting.domain.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ChatMessage {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    @NotNull
+    private ChatRoom room;
+
+    @ManyToOne
+    @JoinColumn(name = "participant_id")
+    @NotNull
+    private ChatParticipant sender;
+
+    @NotNull
+    private String message;
+
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime sendAt;
+
+    @Builder
+    public ChatMessage(ChatRoom room, ChatParticipant sender, String message, LocalDateTime sendAt) {
+        this.room = room;
+        this.sender = sender;
+        this.message = message;
+        this.sendAt = sendAt;
+    }
+}
