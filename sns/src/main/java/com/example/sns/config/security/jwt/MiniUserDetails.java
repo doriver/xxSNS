@@ -13,11 +13,11 @@ public class MiniUserDetails implements UserDetails {
 
     private final Collection<? extends GrantedAuthority> authorities;
     private final Long userId;
-    private final String userNickname;
+    private final String username;
 
-    public MiniUserDetails(Long userId, String userNickname, Collection<? extends GrantedAuthority> authorities) {
+    public MiniUserDetails(Long userId, String username, Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
-        this.userNickname = userNickname;
+        this.username = username;
         this.authorities = authorities;
     }
 
@@ -25,9 +25,6 @@ public class MiniUserDetails implements UserDetails {
         return userId;
     }
 
-    public String getNickname() {
-        return userNickname;
-    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
@@ -40,6 +37,6 @@ public class MiniUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return "";
+        return username;
     }
 }

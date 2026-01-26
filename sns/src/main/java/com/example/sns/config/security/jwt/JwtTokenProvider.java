@@ -45,7 +45,7 @@ public class JwtTokenProvider {
                 .collect(Collectors.joining(","));
 
         CustomUserDetails userDetail = (CustomUserDetails) authentication.getPrincipal();
-        UserInfo userInfo = new UserInfo(userDetail.getId(), userDetail.getNickname());
+        UserInfo userInfo = new UserInfo(userDetail.getId(), userDetail.getUsername());
              
         long now = (new Date()).getTime();
 
@@ -88,7 +88,7 @@ public class JwtTokenProvider {
 
         Map userInfo = (Map<String, Object>)(claims.get("info"));
         // class java.lang.Integer cannot be cast to class java.lang.Long
-        MiniUserDetails principal = new MiniUserDetails(Long.valueOf((Integer)(userInfo.get("userId"))),(String)(userInfo.get("userNickname")) ,authorities);
+        MiniUserDetails principal = new MiniUserDetails(Long.valueOf((Integer)(userInfo.get("userId"))),(String)(userInfo.get("username")) ,authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 

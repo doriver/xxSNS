@@ -58,9 +58,9 @@ public class UserSignService {
     }
 
     // 로그인
-    public JwtToken authenticateUser(String nickname, String password) {
+    public JwtToken authenticateUser(String username, String password) {
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(nickname, password);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
 
         // username, password에 대한 검증
         // 메서드authenticate가 실행될 때 CustomUserDetailsService에서 만든 메서드loadUserByUsername가 실행됨

@@ -22,6 +22,6 @@ public class UserInfoArgumentResolver implements HandlerMethodArgumentResolver {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         MiniUserDetails userDetail = (MiniUserDetails) authentication.getPrincipal();
 
-        return new UserInfo(userDetail.getId(), userDetail.getNickname());
+        return new UserInfo(userDetail.getId(), userDetail.getUsername());
     }
 }
