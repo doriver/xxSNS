@@ -19,8 +19,8 @@ public class UserSignUpDTO {
     @Size(min = 1, max = 15, message = "비밀번호는 15자 이하로 입력하세요.")
     private String password;
 
-    @NotNull
-    private Role role;
+//    @NotNull
+//    private Role role;
 
     @NotBlank
     private String email;

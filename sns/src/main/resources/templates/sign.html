@@ -15,8 +15,7 @@
   	<!-- Bootstrap의 Js부분( jQuery와 Popper.js에 의존 ) -->
   	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   	
-  	<link rel="stylesheet" href="/static/css/style.css">
-  	<script type="text/javascript" src="/static/js/common.js"></script>
+  	<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 	<header>
@@ -29,11 +28,12 @@
 	
 	<section class="d-flex justify-content-center">
 		
-		<form id="loginForm" th:action="@{/users/sign-in}" method="post" onsubmit="return loginValidation();">
+		<form id="loginForm">
 			<h2>로그인</h2>
 			<input type="text" id="username" name="username" class="form-control mt-3" placeholder="아이디">
 			<input type="password" id="password" name="password" class="form-control mt-3" placeholder="패스워드">
-			<button id="loginBtn" type="submit" class="btn btn-primary btn-block mt-3">로그인</button>
+			<button id="loginBtn" type="button" onclick="submitLogin()"
+					class="btn btn-primary btn-block mt-3">로그인</button>
 		</form>
 		
 		<img src="https://cdn.pixabay.com/photo/2016/11/11/10/41/forex-1816354_960_720.jpg" width="400" height="600">
@@ -60,21 +60,38 @@
 	<div th:replace="~{include/footer}"></div>
 	
 	<script type="text/javascript">
-		function loginValidation() {
-			var idForLogin = $("#username").val();
-			var passwordForLogin = $("#password").val();
-			
-			if(idForLogin == null || idForLogin == "") {
+		function submitLogin() {
+			var username = $("#username").val();
+			var password = $("#password").val();
+
+			if(username == null || username == "") {
 				alert("아이디를 입력해주세요");
-				return false;
+				return ;
 			}
-			
-			if(passwordForLogin == null || passwordForLogin == "") {
+
+			if(password == null || password == "") {
 				alert("비밀번호를 입력해주세요");
-				return false;
+				return ;
 			}
-			
-			return true;
+			var params = { "username":username, "password":password }
+
+			$.ajax({
+					type:"post",
+					url:"/users/sign-in",
+					data:JSON.stringify(params),
+					contentType: 'application/json;charset=utf-8',
+					success:function(response) {
+						alert("로그인 성공");
+						location.href="/post-view";
+					},
+					error:function(xhr) {
+						let response = xhr.responseJSON;
+						console.log(response);
+
+						alert(response.errorMessage);
+					}
+				});
+
 		}
 	
 		$(document).ready(function() {			
@@ -124,7 +141,7 @@
 					return ;
 				}
 				
-				var params = { "loginId":loginId, "password":password, "email":email }
+				var params = { "username":loginId, "password":password, "email":email }
 				
 				$.ajax({
 					type:"post",

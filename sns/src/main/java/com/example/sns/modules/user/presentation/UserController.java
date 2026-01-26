@@ -31,7 +31,8 @@ public class UserController {
 
 	// 로그인
 	@PostMapping("/users/sign-in")
-    public String signIn(@Valid @RequestBody UserSignInDTO userSignInDTO, HttpServletResponse response) {
+	@ResponseBody
+    public ApiResponse<?> signIn(@Valid @RequestBody UserSignInDTO userSignInDTO, HttpServletResponse response) {
 
 		JwtToken jwtToken = userSignService.authenticateUser(userSignInDTO.getUsername(), userSignInDTO.getPassword());
 		log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
@@ -44,7 +45,7 @@ public class UserController {
 
 		response.addCookie(accessCookie);
         
-		return "redirect:/post-view";
+		return ApiResponse.success();
 	}
 
 	// 아이디 중복확인 기능

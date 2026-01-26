@@ -3,6 +3,7 @@ package com.example.sns.modules.user.application;
 
 import com.example.sns.config.security.jwt.JwtToken;
 import com.example.sns.config.security.jwt.JwtTokenProvider;
+import com.example.sns.modules.user.domain.entity.Role;
 import com.example.sns.modules.user.domain.entity.User;
 import com.example.sns.modules.user.domain.repository.UserRepository;
 import com.example.sns.modules.user.presentation.dto.UserSignUpDTO;
@@ -48,7 +49,7 @@ public class UserSignService {
         }
         User user = User.builder()
                 .username(userSignUpDTO.getUsername()).password(encryptPassword)
-                .role(userSignUpDTO.getRole()).email(userSignUpDTO.getEmail())
+                .role(Role.USER).email(userSignUpDTO.getEmail())
                 .build();
 
         User savedUser = userRepository.save(user);

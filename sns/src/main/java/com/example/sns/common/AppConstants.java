@@ -8,7 +8,7 @@ public class AppConstants {
 
             "/", "/js/**", "/img/**", "/css/**", "/favicon.ico", "/api/all",
             "/sign-view", // 회원가입, 로그인 페이지
-            "/users/sign/*", // 회원가입, 로그인 api
+            "/users", "/users/*", // 회원가입, 로그인 api
 
             "/sse/trigger", // 테스트용
             "/view/chat/*", // 채팅목록, 채팅방 페이지
