@@ -1,10 +1,12 @@
 package com.example.sns.config.redis;
 
-import com.exercise.chatting02.chatting.application.messaging.SseChatListService;
+import com.example.sns.modules.chatting.application.messaging.SseChatListService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -14,7 +16,8 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 public class RoomListMessageListenConfig {
 
     @Bean
-    RedisMessageListenerContainer chatRoomListContainer(RedisConnectionFactory connectionFactory
+    RedisMessageListenerContainer chatRoomListContainer(
+            @Qualifier("redisConnectionFactoryMessageBroker") RedisConnectionFactory connectionFactory
             ,@Qualifier("countUpListener") MessageListenerAdapter countUpListener
             ,@Qualifier("countDownListener") MessageListenerAdapter countDownListener
             ,@Qualifier("creationRoomListener") MessageListenerAdapter creationRoomListener
@@ -50,8 +53,15 @@ public class RoomListMessageListenConfig {
     }
 
     @Bean
-    StringRedisTemplate strTemplate(RedisConnectionFactory connectionFactory) {
+    StringRedisTemplate strTemplate(@Qualifier("redisConnectionFactoryMessageBroker") RedisConnectionFactory connectionFactory) {
         return new StringRedisTemplate(connectionFactory);
+    }
+
+    @Bean(name = "redisConnectionFactoryMessageBroker")
+    public RedisConnectionFactory redisConnectionFactoryMessageBroker() {
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
+        config.setDatabase(10); // 메시지 브로커 전용 DB 번호
+        return new LettuceConnectionFactory(config);
     }
 
 }

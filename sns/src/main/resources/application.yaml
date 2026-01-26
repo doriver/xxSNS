@@ -10,6 +10,8 @@ spring:
     redis:
       host: localhost # host.docker.internal
       port: 6379
+      repositories:
+        enabled: false # Repository 자동 설정을 끔, @RedisHash나 CrudRepository<User, String> 같은 Redis Repository 패턴을 사용하면 지워야함
   jpa:
     hibernate:
       ddl-auto: update
