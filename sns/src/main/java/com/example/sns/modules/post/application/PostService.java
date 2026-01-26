@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final PostRespository postRespository;
+    private final PostRespository postRepository;
     private final CommentService commentService;
     private final LikeService likeService;
     private final UserService userService;
@@ -46,7 +47,7 @@ public class PostService {
                 .userId(userId).username(username).content(content).imagePath(filePath)
                 .build();
 
-        Post savedPost = postRespository.save(post);
+        Post savedPost = postRepository.save(post);
         if (savedPost == null) {
             log.error("[PostBO addPost] save()실패");
             throw new Expected5xxException(ErrorCode.FAIL_CREATE_POST);
@@ -56,7 +57,7 @@ public class PostService {
     }
 
     public List<PostWithOthers> getTimeLine(Long myUserId) {
-        List<Post> postList = postRespository.findAllByOrderByIdDesc();
+        List<Post> postList = postRepository.findAllByOrderByIdDesc();
 
         List<PostWithOthers> postWithOthersList = new LinkedList<>();
 
@@ -71,6 +72,29 @@ public class PostService {
             PostWithOthers postWithOthers
                     = PostWithOthers.builder()
                     .post(post).writerProfileImage(writerProfileImage)
+                    .commentList(commentList).isLike(isLike).likeCount(likeCount)
+                    .build();
+
+            postWithOthersList.add(postWithOthers);
+        }
+
+        return postWithOthersList;
+    }
+
+    public List<PostWithOthers> getTimeLineByUserId(Long userId) {
+        List<Post> postList = postRepository.findAllByUserIdOrderByIdDesc(userId);
+
+        List<PostWithOthers> postWithOthersList = new ArrayList<>();
+
+        for(Post post:postList) {
+            List<Comment> commentList = commentService.getCommentListByPostId(post.getId());
+
+            boolean isLike = likeService.existLike(post.getId(), userId);
+            int likeCount = likeService.countLike(post.getId());
+
+            PostWithOthers postWithOthers
+                    = PostWithOthers.builder()
+                    .post(post)
                     .commentList(commentList).isLike(isLike).likeCount(likeCount)
                     .build();
 

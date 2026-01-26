@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PostRespository extends JpaRepository<Post, Long> {
     List<Post> findAllByOrderByIdDesc();
+    List<Post> findAllByUserIdOrderByIdDesc(Long userId);
 }

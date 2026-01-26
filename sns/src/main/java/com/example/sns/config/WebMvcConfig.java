@@ -13,6 +13,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/images/**") // 이 패턴으로 요청시 아래 경로에서 정적 리소스를 찾아 응답  . 내가 url로 접근하고 싶은 path /images/10_1231212312/test.png
+                .addResourceLocations("file:///D:\\devJava\\xxSNS\\app_images/");
+
         registry.addResourceHandler("/favicon.ico") // [http://localhost:8080/favicon.ico]
                 .addResourceLocations("classpath:/static/"); // 브라우저 탭에 표시되는 아이콘
     }
