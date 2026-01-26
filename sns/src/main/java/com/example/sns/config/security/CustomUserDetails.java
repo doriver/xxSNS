@@ -1,6 +1,6 @@
 package com.example.sns.config.security;
 
-import com.example.sns.user.domain.entity.User;
+import com.example.sns.modules.user.domain.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

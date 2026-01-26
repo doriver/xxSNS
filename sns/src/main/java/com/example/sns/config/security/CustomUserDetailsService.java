@@ -1,7 +1,7 @@
 package com.example.sns.config.security;
 
-import com.example.sns.user.domain.entity.User;
-import com.example.sns.user.domain.repository.UserRepository;
+import com.example.sns.modules.user.domain.entity.User;
+import com.example.sns.modules.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /*

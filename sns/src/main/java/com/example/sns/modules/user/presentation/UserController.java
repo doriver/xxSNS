@@ -1,0 +1,92 @@
+package com.example.sns.modules.user.presentation;
+
+import com.example.sns.common.ApiResponse;
+import com.example.sns.common.argumentResolver.UserInfo;
+import com.example.sns.common.exception.Expected4xxException;
+import com.example.sns.common.exception.Expected5xxException;
+import com.example.sns.config.security.jwt.JwtToken;
+import com.example.sns.modules.user.application.UserService;
+import com.example.sns.modules.user.application.UserSignService;
+
+import com.example.sns.modules.user.presentation.dto.UserSignInDTO;
+import com.example.sns.modules.user.presentation.dto.UserSignUpDTO;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Slf4j
+@RequiredArgsConstructor
+@Controller
+public class UserController {
+	
+	private final UserSignService userSignService;
+	private final UserService userService;
+
+	// 로그인
+	@PostMapping("/users/sign-in")
+    public String signIn(@Valid @RequestBody UserSignInDTO userSignInDTO, HttpServletResponse response) {
+
+		JwtToken jwtToken = userSignService.authenticateUser(userSignInDTO.getUsername(), userSignInDTO.getPassword());
+		log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
+
+		// ACCESS TOKEN 쿠키로 발급
+		Cookie accessCookie = new Cookie("Authorization", jwtToken.getAccessToken());
+		accessCookie.setHttpOnly(true);
+		accessCookie.setMaxAge(30 * 60); // 30분 동안 유효
+		accessCookie.setPath("/");
+
+		response.addCookie(accessCookie);
+        
+		return "redirect:/post-view";
+	}
+
+	// 아이디 중복확인 기능
+	@GetMapping("/users/{loginId}")
+	@ResponseBody
+	public ApiResponse<Map<String, Boolean>> isDuplicateId (@PathVariable("loginId") String loginId) {
+
+		Map<String, Boolean> result = new HashMap<>();
+		result.put("is_duplicate"
+				, userService.isDuplicateId(loginId));
+
+		return ApiResponse.success(result);
+	}
+
+
+	// 회원가입 기능 - 입력받은 정보들을 db에 저장(insert)
+	@PostMapping("/users")
+	@ResponseBody
+	public ApiResponse<?> signUp(@Valid @RequestBody UserSignUpDTO userSignUpDTO) {
+
+		Map<String,Object> result = userSignService.registerUser(userSignUpDTO);
+
+		if (result.get("failMessage") != null) {
+			throw new Expected4xxException(
+					(String)(result.get("failMessage")));
+		}
+
+		if (result.get("successValue") == null) {
+			throw new Expected5xxException("회원가입에 실패했습니다.");
+		}
+		return ApiResponse.success(result.get("successValue"));
+	}
+
+	// 사용자의 위치설정 기능
+	@PatchMapping("/users/location")
+	@ResponseBody
+	public ApiResponse<?> userLocation(
+			@RequestParam("location") String location
+			, UserInfo userInfo) {
+
+		userService.editLocation(userInfo.getUserId(), location);
+		return ApiResponse.success();
+	}
+	
+}
