@@ -1,14 +1,11 @@
 package com.example.sns.views;
 
-
-import com.exercise.chatting02.chatting.application.ChatRoomService;
-import com.exercise.chatting02.chatting.domain.repository.ChatParticipantRepository;
-import com.exercise.chatting02.chatting.domain.repository.ChatRoomRepository;
-import com.exercise.chatting02.chatting.presentation.dto.response.ChatRoomInfoResponse;
-import com.exercise.chatting02.common.annotation.CurrentUser;
-import com.exercise.chatting02.user.domain.model.User;
+import com.example.sns.common.argumentResolver.UserInfo;
+import com.example.sns.modules.chatting.application.ChatRoomService;
+import com.example.sns.modules.chatting.domain.repository.ChatParticipantRepository;
+import com.example.sns.modules.chatting.domain.repository.ChatRoomRepository;
+import com.example.sns.modules.chatting.presentation.dto.response.ChatRoomInfoResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/view/chatting")
+@RequestMapping("/chatting-view")
 @RequiredArgsConstructor
 public class ChattingViewController {
 
@@ -26,18 +23,17 @@ public class ChattingViewController {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomService chatRoomService;
 
-    @Value("${server.port}") private String serverPort;
 
     /*
         단톡방 목록 화면
         접근범위(권한) : all
      */
     @GetMapping("/list")
-    public String chatListView(Model model, @CurrentUser User user) {
+    public String chatListView(Model model, UserInfo userInfo) {
         List<ChatRoomInfoResponse> chatRoomList = chatRoomService.getChatRoomListView();
         model.addAttribute("chatRoomList", chatRoomList);
-        if (user != null) {
-            Long userId = user.getId();
+        Long userId = userInfo.getUserId();
+        if (userId != null) {
             model.addAttribute("userId", userId);
         }
         return "chatting/chatList";
@@ -49,12 +45,11 @@ public class ChattingViewController {
         @PostMapping("/participant/{rid}") enterRoom() 에서만 접근가능 하도록 설계됨
      */
     @GetMapping("/rooms/{roomId}")
-    public String chatView(@PathVariable("roomId") long roomId, @CurrentUser User user, Model model) {
+    public String chatView(@PathVariable("roomId") long roomId, UserInfo userInfo, Model model) {
         chatRoomService.roomViewSetting(roomId, model);
 
-        model.addAttribute("userId", user.getId());
-        model.addAttribute("nickname", user.getNickname());
-        model.addAttribute("serverPort", serverPort);
+        model.addAttribute("userId", userInfo.getUserId());
+        model.addAttribute("nickname", userInfo.getUsername());
 
         return "chatting/chatRoom";
     }
