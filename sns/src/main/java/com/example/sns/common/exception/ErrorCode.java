@@ -17,7 +17,8 @@ public enum ErrorCode {
     , DONT_HAVE_AUTHORITY(HttpStatus.BAD_REQUEST, "해당 서비스를 이용할 권한이 없습니다.")
 
     , FAIL_SAVE_FILE(HttpStatus.INTERNAL_SERVER_ERROR, "파일저장에 실패했습니다.")
-    , FAIL_CREATE_POST(HttpStatus.INTERNAL_SERVER_ERROR, "글작성에 싪패햇습니다")
+    , FAIL_CREATE_POST(HttpStatus.INTERNAL_SERVER_ERROR, "글작성에 실패햇습니다")
+    , FAIL_CREATE_COMMENT(HttpStatus.INTERNAL_SERVER_ERROR, "댓글작성에 실패햇습니다")
 
     ;
     private final HttpStatus httpStatus;

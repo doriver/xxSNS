@@ -61,7 +61,7 @@ public class PostService {
         List<PostWithOthers> postWithOthersList = new LinkedList<>();
 
         for(Post post:postList) {
-            List<Comment> commentList = commentService.getCommentListByPostIdType(post.getId());
+            List<Comment> commentList = commentService.getCommentListByPostId(post.getId());
 
             boolean isLike = likeService.existLike(post.getId(), myUserId);
             int likeCount = likeService.countLike(post.getId());

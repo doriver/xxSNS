@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 
@@ -22,6 +23,7 @@ public class PostController {
 
     // 게시글 작성
     @PostMapping("/posts")
+    @ResponseBody
     public ApiResponse<?> postCreate(@Valid @ModelAttribute PostSaveDTO form
             , UserInfo userInfo) {
 

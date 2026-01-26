@@ -226,19 +226,15 @@
 				
 				$.ajax({
 					type:"post",
-					url:"/comments/invest/" + postId,
+					url:"/comments/" + postId,
 					data:{"content":comment},
 					success:function(response) {
-						if(response.status == "success") {
-							location.reload();
-						} else {
-							alert(response.message);
-						}
+						location.reload();
 					},
 					error:function(xhr) {
 						let response = xhr.responseJSON;
 						console.log(response);
-						alert("댓글 작성 실패 \n" + response.message);
+						alert("댓글 작성 실패 \n" + response.errorMessage);
 					}
 				});
 			});
