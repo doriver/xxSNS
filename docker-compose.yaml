@@ -21,7 +21,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/conf.d/common_proxy.conf:/etc/nginx/conf.d/common_proxy.conf:ro
       - ./nginx/cache:/cache/sns/data
     depends_on:
       - was01

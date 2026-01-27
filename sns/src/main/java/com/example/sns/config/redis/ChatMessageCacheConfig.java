@@ -1,5 +1,6 @@
 package com.example.sns.config.redis;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -12,10 +13,15 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class ChatMessageCacheConfig {
+    @Value("${spring.data.redis.host}")
+    private String host;
+
+    @Value("${spring.data.redis.port}")
+    private int port;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactoryDb02() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
         config.setDatabase(2); // 2번 DB 설정
         return new LettuceConnectionFactory(config);
     }

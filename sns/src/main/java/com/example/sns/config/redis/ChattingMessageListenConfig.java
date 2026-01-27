@@ -3,6 +3,7 @@ package com.example.sns.config.redis;
 import com.example.sns.modules.chatting.application.messaging.SubscriberStompDoor;
 import com.example.sns.modules.chatting.application.messaging.SubscriberStompMessage;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -16,6 +17,12 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class ChattingMessageListenConfig {
+    @Value("${spring.data.redis.host}")
+    private String host;
+
+    @Value("${spring.data.redis.port}")
+    private int port;
+
     @Bean
     RedisMessageListenerContainer container(
         @Qualifier("chattingConnectionFactory") RedisConnectionFactory connectionFactory
@@ -54,7 +61,7 @@ public class ChattingMessageListenConfig {
 
     @Bean(name = "chattingConnectionFactory")
     public RedisConnectionFactory chattingConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
         config.setDatabase(9); // 채팅메시지 메시지 브로커 전용 DB 번호
         return new LettuceConnectionFactory(config);
     }

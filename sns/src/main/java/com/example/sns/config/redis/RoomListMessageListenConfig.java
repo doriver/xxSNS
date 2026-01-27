@@ -2,6 +2,7 @@ package com.example.sns.config.redis;
 
 import com.example.sns.modules.chatting.application.messaging.SseChatListService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -14,6 +15,11 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 @Configuration
 public class RoomListMessageListenConfig {
+    @Value("${spring.data.redis.host}")
+    private String host;
+
+    @Value("${spring.data.redis.port}")
+    private int port;
 
     @Bean
     RedisMessageListenerContainer chatRoomListContainer(
@@ -59,7 +65,7 @@ public class RoomListMessageListenConfig {
 
     @Bean(name = "chatRoomConnectionFactory")
     public RedisConnectionFactory chatRoomConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
         config.setDatabase(10); // 채팅방List 메시지 브로커 전용 DB 번호
         return new LettuceConnectionFactory(config);
     }

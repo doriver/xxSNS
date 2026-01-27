@@ -5,7 +5,7 @@ let roomEnd = false; // 해당방 종료 정보
 
 function socketSetting() {
     stompClient = new StompJs.Client({ // 웹소켓 url
-        brokerURL: `ws://localhost:8080/websocket-chatRoom`
+        brokerURL: `ws://localhost:80/websocket-chatRoom`
     });
 
     // 로그인한 사용자 정보 
