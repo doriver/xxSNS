@@ -1,7 +1,9 @@
 package com.example.sns.modules.chatting.application.messaging;
 
+import com.example.sns.common.utils.JsonHandling;
 import com.example.sns.modules.chatting.presentation.dto.message.ParticipantMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -10,7 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ParticipantChangeEvent {
-    private final SimpMessagingTemplate messagingTemplate;
+//    private final SimpMessagingTemplate messagingTemplate;
+    private final RedisTemplate<String, String> stompPubSubRedisTemplate;
     private final StringRedisTemplate strTemplate;
 
     public void inAndOut(int access, long roomId, long chatterId, String chatterName) {
@@ -20,8 +23,9 @@ public class ParticipantChangeEvent {
 
         try {
             // 해당 방에 입장,퇴장 알리기
-            messagingTemplate.convertAndSend(
-                    "/chatRoom/" + roomId + "/door", participantDTO);
+            // publish to redis
+            String jsonString = JsonHandling.objToJsonString(participantDTO);
+            stompPubSubRedisTemplate.convertAndSend("DchatRoom:" + roomId, jsonString);
         } catch (MessagingException e) {
             // throw new RuntimeException(e);
         }

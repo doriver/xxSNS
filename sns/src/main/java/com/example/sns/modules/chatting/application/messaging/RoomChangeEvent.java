@@ -7,6 +7,7 @@ import com.example.sns.modules.chatting.domain.entity.ChatRoom;
 import com.example.sns.modules.chatting.presentation.dto.response.ChatRoomInfoResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class RoomChangeEvent {
     private final SimpMessagingTemplate messagingTemplate;
     private final StringRedisTemplate strTemplate;
+    private final RedisTemplate<String, String> stompPubSubRedisTemplate;
 
     private final ToDto toDto;
 
@@ -36,8 +38,8 @@ public class RoomChangeEvent {
 
     public void roomEnd(Long roomId) {
         // 해당 방 종료 알리기( 채팅방에 연결된 웹소켓 통신 종료시키기 )
-        String destination = "/chatRoom/" + roomId + "/door";
-        messagingTemplate.convertAndSend(destination, "DISCONNECT");
+        // publish to redis
+        stompPubSubRedisTemplate.convertAndSend("DchatRoom:" + roomId, "DISCONNECT");
 
         try {
             // 채팅방 목록에서 해당방 삭제

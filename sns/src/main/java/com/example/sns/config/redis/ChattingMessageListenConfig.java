@@ -1,6 +1,7 @@
 package com.example.sns.config.redis;
 
-import com.example.sns.modules.chatting.application.messaging.SubscriberSTOMP;
+import com.example.sns.modules.chatting.application.messaging.SubscriberStompDoor;
+import com.example.sns.modules.chatting.application.messaging.SubscriberStompMessage;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,18 +19,25 @@ public class ChattingMessageListenConfig {
     @Bean
     RedisMessageListenerContainer container(
         @Qualifier("chattingConnectionFactory") RedisConnectionFactory connectionFactory
-        , @Qualifier("stompAdapter") MessageListenerAdapter stompAdapter) {
+        , @Qualifier("stompMessageAdapter") MessageListenerAdapter stompMessageAdapter
+        , @Qualifier("stompDoorAdapter") MessageListenerAdapter stompDoorAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         // subscribe (redis로 부터)
-        container.addMessageListener(stompAdapter, new PatternTopic("chatRoom:*"));
+        container.addMessageListener(stompMessageAdapter, new PatternTopic("MchatRoom:*"));
+        container.addMessageListener(stompDoorAdapter, new PatternTopic("DchatRoom:*"));
         return container;
     }
 
-    @Bean(name = "stompAdapter")
-    MessageListenerAdapter stompListener(SubscriberSTOMP subscriberSTOMP) {
+    @Bean(name = "stompMessageAdapter")
+    MessageListenerAdapter stompMessageListener(SubscriberStompMessage subscriberStompMessage) {
         // redis에게 메시지 받았을때 실행되는 효과
-        return new MessageListenerAdapter(subscriberSTOMP, "onMessage");
+        return new MessageListenerAdapter(subscriberStompMessage, "onMessage");
+    }
+    @Bean(name = "stompDoorAdapter")
+    MessageListenerAdapter stompDoorListener(SubscriberStompDoor subscriberStompDoor) {
+        // redis에게 메시지 받았을때 실행되는 효과
+        return new MessageListenerAdapter(subscriberStompDoor, "onMessage");
     }
 
     @Bean(name = "stompPubSubRedisTemplate")

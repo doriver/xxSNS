@@ -1,6 +1,7 @@
 package com.example.sns.modules.chatting.presentation;
 
 
+import com.example.sns.common.utils.JsonHandling;
 import com.example.sns.common.utils.TimeFormat;
 import com.example.sns.modules.chatting.application.ChatMessageService;
 import com.example.sns.modules.chatting.domain.dto.ChatMessageRedisDTO;
@@ -50,14 +51,7 @@ public class StompChattingController {
                 .build();
 
         // publish to redis
-        String jsonString = jsonStringConverter(msg);
-        stompPubSubRedisTemplate.convertAndSend("chatRoom:" + roomId, jsonString);
-    }
-
-    public String jsonStringConverter(RecieveMessage msg) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        // 객체를 JSON String으로 변환
-        String jsonString = objectMapper.writeValueAsString(msg);
-        return jsonString;
+        String jsonString = JsonHandling.objToJsonString(msg);
+        stompPubSubRedisTemplate.convertAndSend("MchatRoom:" + roomId, jsonString);
     }
 }

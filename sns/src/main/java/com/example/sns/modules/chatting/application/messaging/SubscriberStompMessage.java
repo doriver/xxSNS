@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class SubscriberSTOMP implements MessageListener {
+public class SubscriberStompMessage implements MessageListener {
 
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -18,9 +18,9 @@ public class SubscriberSTOMP implements MessageListener {
         // 실제 메시지가 온 채널명 추출 (예: "chatRoom:123")
         String fullChannel = new String(message.getChannel());
 
-        if (fullChannel.startsWith("chatRoom:")) {
+        if (fullChannel.startsWith("MchatRoom:")) {
             // "chatRoom:123"에서 "123"만 추출하기
-            String roomId = fullChannel.replace("chatRoom:", "");
+            String roomId = fullChannel.replace("MchatRoom:", "");
             // Redis에서 받은 byte[]를 JSON 문자열로 변환
             String publishMessage = new String(message.getBody());
             // STOMP로 클라이언트들에게 broadcasting
