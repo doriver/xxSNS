@@ -175,7 +175,7 @@ function exitRoom() {
         url:"/chatting/participants/rooms/" + roomId,
         success:async function(response) {
             await disconnect();
-            location.href="/view/chatting/list";
+            location.href="/chatting-view/list";
         },
         error:function(xhr) {
             let response = xhr.responseJSON;

@@ -15,16 +15,30 @@
 
     <title>단톡방 목록</title>
     <link href="/css/chatting/chatList.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
     <script src="/js/chatting/chatList.js"></script>
   </head>
 
   <body>
+  <header class="d-flex">
+      <div class="col-4 d-flex">
+          <img src="https://cdn.pixabay.com/photo/2021/09/09/04/26/coins-6609452_960_720.jpg" width="50" height="50">
+          <h2 class="text-danger pt-2">작은SNS</h2>
+      </div>
+      <div class="col-4 d-flex justify-content-center">
+          <h2 class="pt-3 text-danger">단체 채팅</h2>
+      </div>
+      <div th:replace="~{include/userSector}"></div>
+  </header>
+
+  <nav class="mt-3 mb-3">
+      <div th:replace="~{include/viewList}"></div>
+  </nav>
     <div style="height: 50px;">
       <input type="hidden" class="userId" th:value="${userId}">
       <button onclick="as()">sse close</button>
       <button onclick="ab()">sse info</button>
     </div>
-    <div th:replace="~{fragment/header}"></div>
     <div class="container">
       <div class="row">
         <div class="col-4">
@@ -41,7 +55,7 @@
           </div>
         </div>
         <div class="col-4">
-          <div sec:authorize="hasAuthority('MENTOR')">
+          <div sec:authorize="hasRole('MENTOR')">
             <button type="button" class="btn btn-success"
               onclick="createRoom()">단톡방 생성하기</button>
           </div>

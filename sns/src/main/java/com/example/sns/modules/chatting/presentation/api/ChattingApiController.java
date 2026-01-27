@@ -28,7 +28,7 @@ public class ChattingApiController {
     public String enterRoom(@PathVariable("roomId") long roomId
                             , UserInfo userInfo) {
         chatParticipanceService.userEnterRoom(roomId, userInfo.getUserId());
-        return "redirect:/view/chatting/rooms/" + roomId;
+        return "redirect:/chatting-view/rooms/" + roomId;
     }
 
     /*

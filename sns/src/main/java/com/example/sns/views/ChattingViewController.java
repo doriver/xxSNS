@@ -5,6 +5,8 @@ import com.example.sns.modules.chatting.application.ChatRoomService;
 import com.example.sns.modules.chatting.domain.repository.ChatParticipantRepository;
 import com.example.sns.modules.chatting.domain.repository.ChatRoomRepository;
 import com.example.sns.modules.chatting.presentation.dto.response.ChatRoomInfoResponse;
+import com.example.sns.modules.user.application.UserService;
+import com.example.sns.modules.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,21 +22,23 @@ import java.util.List;
 public class ChattingViewController {
 
     private final ChatParticipantRepository chatParticipantRepository;
-    private final ChatRoomRepository chatRoomRepository;
+    private final UserService userService;
     private final ChatRoomService chatRoomService;
 
 
     /*
         단톡방 목록 화면
-        접근범위(권한) : all
      */
     @GetMapping("/list")
     public String chatListView(Model model, UserInfo userInfo) {
         List<ChatRoomInfoResponse> chatRoomList = chatRoomService.getChatRoomListView();
         model.addAttribute("chatRoomList", chatRoomList);
-        Long userId = userInfo.getUserId();
-        if (userId != null) {
-            model.addAttribute("userId", userId);
+
+        Long myUserId = userInfo.getUserId();
+        if (myUserId != null) {
+            User myInfo = userService.userInformation(myUserId);
+            model.addAttribute("userId", myUserId);
+            model.addAttribute("myInfo", myInfo);
         }
         return "chatting/chatList";
     }
@@ -48,7 +52,11 @@ public class ChattingViewController {
     public String chatView(@PathVariable("roomId") long roomId, UserInfo userInfo, Model model) {
         chatRoomService.roomViewSetting(roomId, model);
 
-        model.addAttribute("userId", userInfo.getUserId());
+        Long myUserId = userInfo.getUserId();
+        User myInfo = userService.userInformation(myUserId);
+
+        model.addAttribute("userId", myUserId);
+        model.addAttribute("myInfo", myInfo);
         model.addAttribute("nickname", userInfo.getUsername());
 
         return "chatting/chatRoom";

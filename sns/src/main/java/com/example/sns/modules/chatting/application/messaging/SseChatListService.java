@@ -5,6 +5,7 @@ import com.example.sns.common.exception.Expected5xxException;
 import com.example.sns.modules.chatting.presentation.dto.response.ChatRoomInfoResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -72,7 +73,7 @@ public class SseChatListService {
         ChatRoomInfoResponse chatRoomInfoResponse = convertFromJson(chatRoomJson);
         for (SseEmitter emitter : emitters) {
             try {
-                emitter.send(SseEmitter.event().name("roomCreation").data(chatRoomInfoResponse));
+                emitter.send(SseEmitter.event().name("roomCreation").data(chatRoomInfoResponse, MediaType.APPLICATION_JSON));
             } catch (IOException e) {
                 emitter.complete();
             }

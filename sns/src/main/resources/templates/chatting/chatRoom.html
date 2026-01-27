@@ -14,16 +14,30 @@
 
     <title>단톡방</title>
     <link href="/css/chatting/chatRoom.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
     <script src="/js/chatting/chatRoom.js"></script>
   </head>
 
   <body>
+    <header class="d-flex">
+      <div class="col-4 d-flex">
+          <img src="https://cdn.pixabay.com/photo/2021/09/09/04/26/coins-6609452_960_720.jpg" width="50" height="50">
+          <h2 class="text-danger pt-2">작은SNS</h2>
+      </div>
+      <div class="col-4 d-flex justify-content-center">
+          <h2 class="pt-3 text-danger">단체 채팅</h2>
+      </div>
+      <div th:replace="~{include/userSector}"></div>
+    </header>
+
+    <nav class="mt-3 mb-3">
+        <div th:replace="~{include/viewList}"></div>
+    </nav>
     <input type="hidden" id="userName" th:value="${nickname}">
     <input type="hidden" id="userId" th:value="${userId}">
     <input type="hidden" id="roomId" th:value="${roomView.roomId}">
     <input type="hidden" id="roomMentorId" th:value="${roomView.mentorId}">
     <div style="height: 50px;"></div>
-    <div th:replace="~{fragment/header}"></div>
     <div class="container">
       <div class="row">
         <div class="col-8">
@@ -32,7 +46,7 @@
         </div>
         <div class="col-3">
           <button sec:authorize="isAuthenticated()" onclick="exitRoom()">채팅방 나가기</button>
-          <div sec:authorize="hasAuthority('MENTOR')">
+          <div sec:authorize="hasRole('MENTOR')">
             <button th:if="${userId == roomView.mentorId}" 
               onclick="endRoom()">채팅방 종료하기</button>
           </div>
@@ -46,7 +60,7 @@
             <!-- Header -->
             <div class="header d-flex justify-content-between py-3">
                 <div>
-                    <a href="/view/chatting/list"><i class="fa-solid fa-arrow-left mx-2" style="color: white;"></i></a>
+                    <a href="/chatting-view/list"><i class="fa-solid fa-arrow-left mx-2" style="color: white;"></i></a>
                 </div>
                 <div>
                     <i class="fa-solid fa-magnifying-glass me-2"></i>
