@@ -8,10 +8,12 @@ import com.example.sns.modules.chatting.presentation.dto.message.RecieveMessage;
 import com.example.sns.modules.chatting.presentation.dto.message.SendMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 
@@ -19,11 +21,12 @@ import java.time.LocalDateTime;
 @Slf4j
 @RequiredArgsConstructor
 public class StompChattingController {
+
     private final ChatMessageService chatMessageService;
+    private final RedisTemplate<String, String> stompPubSubRedisTemplate;
 
     @MessageMapping("/{roomId}")
-    @SendTo("/chatRoom/{roomId}/message")
-    public RecieveMessage messageHandler(SendMessage sendMessage
+    public void messageHandler(SendMessage sendMessage
                                 , @DestinationVariable("roomId") long roomId) {
 
         String sender = sendMessage.getSender();
@@ -38,6 +41,7 @@ public class StompChattingController {
             log.error("roomId={} 에서 채팅메시지 저장 살패 senderId={}", roomId, senderId);
             log.error("",e);
         }
+
         TimeFormat timeFormat = new TimeFormat();
         String formattedSendedAt = timeFormat.hourMinute(sendedAt);
 
@@ -45,6 +49,15 @@ public class StompChattingController {
                 .content(message).sender(sender).sendedAt(formattedSendedAt)
                 .build();
 
-        return msg;
+        // publish to redis
+        String jsonString = jsonStringConverter(msg);
+        stompPubSubRedisTemplate.convertAndSend("chatRoom:" + roomId, jsonString);
+    }
+
+    public String jsonStringConverter(RecieveMessage msg) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        // 객체를 JSON String으로 변환
+        String jsonString = objectMapper.writeValueAsString(msg);
+        return jsonString;
     }
 }

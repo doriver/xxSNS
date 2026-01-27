@@ -90,23 +90,4 @@ public class ChatMessageService {
         chatMessageRedisTemplate.delete("room:" + roomId);
     }
 
-    /*
-        레거시 코드
-        개별 채팅메시지 MySQL에 저장
-        save관련해서, getReferenceById()로 최적화 하는것 고려
-     */
-    public void saveMessageRDB(long roomId, long senderId, String message) {
-        User user = userRepository.findById(senderId).orElse(null);
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
-        ChatParticipant chatParticipant = chatParticipantRepository.findByChatterAndRoomAndExitAt(user, chatRoom, null).orElse(null);
-
-        if (chatParticipant != null && chatRoom != null) {
-            ChatMessage dbChatMessage = ChatMessage.builder()
-                    .room(chatRoom).sender(chatParticipant).message(message).sendAt(LocalDateTime.now())
-                    .build();
-            chatMessageRepository.save(dbChatMessage);
-        } else {
-            log.info("잘못된 채팅메시지 저장 시도 roomId={}, senderId={}", roomId, senderId);
-        }
-    }
 }

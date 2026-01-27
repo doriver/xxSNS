@@ -17,7 +17,7 @@ public class RoomListMessageListenConfig {
 
     @Bean
     RedisMessageListenerContainer chatRoomListContainer(
-            @Qualifier("redisConnectionFactoryMessageBroker") RedisConnectionFactory connectionFactory
+            @Qualifier("chatRoomConnectionFactory") RedisConnectionFactory connectionFactory
             ,@Qualifier("countUpListener") MessageListenerAdapter countUpListener
             ,@Qualifier("countDownListener") MessageListenerAdapter countDownListener
             ,@Qualifier("creationRoomListener") MessageListenerAdapter creationRoomListener
@@ -53,14 +53,14 @@ public class RoomListMessageListenConfig {
     }
 
     @Bean
-    StringRedisTemplate strTemplate(@Qualifier("redisConnectionFactoryMessageBroker") RedisConnectionFactory connectionFactory) {
+    StringRedisTemplate strTemplate(@Qualifier("chatRoomConnectionFactory") RedisConnectionFactory connectionFactory) {
         return new StringRedisTemplate(connectionFactory);
     }
 
-    @Bean(name = "redisConnectionFactoryMessageBroker")
-    public RedisConnectionFactory redisConnectionFactoryMessageBroker() {
+    @Bean(name = "chatRoomConnectionFactory")
+    public RedisConnectionFactory chatRoomConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
-        config.setDatabase(10); // 메시지 브로커 전용 DB 번호
+        config.setDatabase(10); // 채팅방List 메시지 브로커 전용 DB 번호
         return new LettuceConnectionFactory(config);
     }
 
