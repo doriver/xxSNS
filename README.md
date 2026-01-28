@@ -12,3 +12,5 @@
 * 로컬에서 docker-compose로 Nginx, SpringBoot 실행    
 MySQL은 로컬 호스트(Window)에 설치, Redis는 WSL(Windows Subsystem for Linux)에 설치
 
+## 약식 ERD
+<img width="727" height="324" alt="image" src="https://github.com/user-attachments/assets/ac12dede-d765-4a5d-8a7b-37dce46f38c9" />
